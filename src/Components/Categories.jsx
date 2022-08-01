@@ -1,18 +1,23 @@
-import { useState } from "react"
-
-function Categories({items}) {
-    const [activeItem, setActiveItem] = useState('Все');
+import { useDispatch, useSelector } from 'react-redux'
+import { setSelectedFilter } from "../redux/slices/filterSlice"
+function Categories() {
+    const active = useSelector(state => state.filter.selectedFilter)
+    const dispatch = useDispatch()
+    const items=[
+        "Все",
+        "Мясные",
+        "Вегетарианская",
+        "Гриль",
+        "Острые",
+        "Закрытые",
+      ]
     return (
     <div className="categories">
         <ul>
-        {/* <li
-        onClick={() => setActiveItem('all')}
-        className={activeItem === 'all' ? 'active' : ''} 
-        >Все</li> */}
-            {items && items.map((item) => <li
-            className={activeItem === item ? 'active' : ''} 
+            {items && items.map((item, i) => <li
+            className={active === i ? 'active' : ''} 
             key={item} 
-            onClick={() => setActiveItem(item)}
+            onClick={() => dispatch(setSelectedFilter(i))}
         >{item}</li>)}
         </ul>
     </div>

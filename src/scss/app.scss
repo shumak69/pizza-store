@@ -27,9 +27,11 @@ body {
   }
 
   &__items {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 260px);
+    grid-template-rows: repeat(1, 1fr);
+    grid-column-gap: 20px;
+    justify-content: space-between;
     > svg {
       margin-right: 35px;
       margin-bottom: 65px
@@ -62,11 +64,15 @@ body {
     justify-content: space-between;
     align-items: center;
   }
-
-  .content__title {
-    display: flex;
-    align-items: center;
-    font-size: 32px;
+  .content{
+    &__items{
+      display: block
+    }
+    &__title {
+      display: flex;
+      align-items: center;
+      font-size: 32px;
+  }
 
     svg {
       position: relative;
@@ -316,3 +322,5 @@ body {
     }
   }
 }
+
+@import './media'

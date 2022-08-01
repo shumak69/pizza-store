@@ -1,0 +1,33 @@
+.input {
+    border: 1px solid rgba(0,0,0,0.1);
+    padding: 8px 15px;
+    padding-left: 30px;
+    width: 300px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(240, 201, 60, 0.5);
+    &:focus {
+        box-shadow: 0 0 10px rgba(60, 240, 90, 0.5);
+    }
+}
+
+.icon {
+    top: 9px;
+    left: 7px;
+}
+
+.search{
+    position: relative;
+}
+
+.close{
+    
+    right: 9px;
+}
+
+.close, .icon {
+    width: 18px;
+    height: 18px;
+    position: absolute;
+    top: 9px;
+    cursor: pointer;
+}
