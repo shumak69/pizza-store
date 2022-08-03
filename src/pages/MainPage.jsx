@@ -1,20 +1,20 @@
 import axios from "axios";
-import qs from "qs";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import Categories from "../Components/Categories";
 import Pagination from "../Components/pagination";
 import PizzaBlock from "../Components/pizzaBlock";
 import PizzaSkeleton from "../Components/pizzaBlock/PizzaSkeleton";
-import Sort from "../Components/Sort";
+import Sort, { list } from "../Components/Sort";
 import { setFilters, setPageCount } from "../redux/slices/filterSlice";
 function Main() {
-  const navigate = useNavigate();
+  let [searchParams, setSearchParams] = useSearchParams();
+  let location = useLocation();
   const { sortType, selectedFilter, searchValue, currentPage, pageCount } =
     useSelector((state) => state.filter);
   const isSearch = useRef(false);
-  const [isMounted, setIsMounted] = useState(false);
+  const isMounted = useRef(false);
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
@@ -27,7 +27,7 @@ function Main() {
           limit: 4,
           category: selectedFilter > 0 ? selectedFilter : null,
           sortBy: sortType.type,
-          order: sortType.params,
+          order: sortType.params || "asc",
           search: searchValue ? searchValue : "",
         },
       })
@@ -41,11 +41,22 @@ function Main() {
   };
 
   useEffect(() => {
-    if (window.location.search) {
-      const params = qs.parse(window.location.search.substring(1));
-      console.log(params);
-
-      dispatch(setFilters({ ...params }));
+    if (location.search) {
+      const currentPage = searchParams.get("currentPage");
+      const selectedFilter = searchParams.get("selectedFilter");
+      const sortType = searchParams.get("sortType");
+      const sort = list.find((obj) => obj.type === sortType);
+      dispatch(
+        setFilters({
+          sortType: sort || {
+            type: "rating",
+            name: "популярности",
+            params: "asc",
+          },
+          selectedFilter: selectedFilter || 0,
+          currentPage: currentPage || 0,
+        })
+      );
       isSearch.current = true;
     }
   }, []);
@@ -57,15 +68,20 @@ function Main() {
     isSearch.current = false;
   }, [selectedFilter, sortType, searchValue, currentPage]);
   useEffect(() => {
-    if (isMounted) {
-      const queryString = qs.stringify({
-        sortType,
-        selectedFilter,
-        currentPage,
-      });
-      navigate(`?${queryString}`);
+    if (isMounted.current) {
+      const filters = {};
+      if (sortType.type != "rating") {
+        filters.sortType = sortType.type;
+      }
+      if (currentPage != 0) {
+        filters.currentPage = currentPage;
+      }
+      if (selectedFilter != 0) {
+        filters.selectedFilter = selectedFilter;
+      }
+      setSearchParams(filters);
     }
-    setIsMounted(true);
+    isMounted.current = true;
   }, [selectedFilter, sortType, currentPage]);
   return (
     <>
@@ -80,7 +96,7 @@ function Main() {
         ) : items.length ? (
           items.map((item) => <PizzaBlock key={item.id} {...item} />)
         ) : (
-          <h2>Пиццы нету</h2>
+          <h2 className="content__empty">Пицца не найдена</h2>
         )}
       </div>
       <Pagination countPages={pageCount} />

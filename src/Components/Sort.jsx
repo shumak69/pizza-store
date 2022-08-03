@@ -8,7 +8,6 @@ export const list = [{name: "популярности", type: 'rating', params: 
 ]
 function Sort() {
   const [isOpen, setIsOpen] = useState(false);
-  ;
   const active = useSelector(state => state.filter.sortType)
   const dispatch = useDispatch()
   function selectItem(i) {

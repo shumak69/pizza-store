@@ -43,6 +43,11 @@ body {
     align-items: center;
     justify-content: space-between;
   }
+  &__empty{
+    color: red;
+    grid-column: 2/4;
+    text-align: center;
+  }
 }
 
 .container {
