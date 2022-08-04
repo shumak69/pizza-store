@@ -1,5 +1,4 @@
-import axios from "axios";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useSearchParams } from "react-router-dom";
 import Categories from "../Components/Categories";
@@ -8,36 +7,39 @@ import PizzaBlock from "../Components/pizzaBlock";
 import PizzaSkeleton from "../Components/pizzaBlock/PizzaSkeleton";
 import Sort, { list } from "../Components/Sort";
 import { setFilters, setPageCount } from "../redux/slices/filterSlice";
+import { fetchPizzas } from "../redux/slices/pizzasSlice";
+
 function Main() {
   let [searchParams, setSearchParams] = useSearchParams();
   let location = useLocation();
   const { sortType, selectedFilter, searchValue, currentPage, pageCount } =
     useSelector((state) => state.filter);
+  const {items, status} = useSelector(state => state.pizzas)
   const isSearch = useRef(false);
   const isMounted = useRef(false);
-  const [items, setItems] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  // const [items, setItems] = useState([]);
+  // const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
-  const fetchPizzas = () => {
-    setIsLoading(true);
-    axios
-      .get(`https://62e3c9643c89b95396d05783.mockapi.io/items?`, {
-        params: {
-          page: currentPage + 1,
-          limit: 4,
-          category: selectedFilter > 0 ? selectedFilter : null,
-          sortBy: sortType.type,
-          order: sortType.params || "asc",
-          search: searchValue ? searchValue : "",
-        },
-      })
-      .then((res) => {
-        if (Math.ceil(res.data.count / 4) !== pageCount) {
-          dispatch(setPageCount(res.data.count));
+  const getPizzas = () => {
+    // setIsLoading(true);
+    // axios
+    //   .get(`https://62e3c9643c89b95396d05783.mockapi.io/items?`, {
+    //     params: {
+    //       page: currentPage + 1,
+    //       limit: 4,
+    //       category: selectedFilter > 0 ? selectedFilter : null,
+    //       sortBy: sortType.type,
+    //       order: sortType.params || "asc",
+    //       search: searchValue ? searchValue : "",
+    //     },
+    //   })
+      dispatch(fetchPizzas({currentPage, selectedFilter, sortType, searchValue}))
+      .then(({payload}) => {
+        const res = payload
+        if (Math.ceil((res?.count || 0) / 4) !== pageCount) {
+          dispatch(setPageCount(res?.count || 0));
         }
-        setItems(res.data.items);
-        setIsLoading(false);
-      });
+      })
   };
 
   useEffect(() => {
@@ -62,7 +64,7 @@ function Main() {
   }, []);
   useEffect(() => {
     if (!isSearch.current) {
-      fetchPizzas();
+      getPizzas();
     }
 
     isSearch.current = false;
@@ -74,6 +76,7 @@ function Main() {
         filters.sortType = sortType.type;
       }
       if (currentPage != 0) {
+        console.log(pageCount)
         filters.currentPage = currentPage;
       }
       if (selectedFilter != 0) {
@@ -91,13 +94,14 @@ function Main() {
       </div>
       <h2 className="content__title">Все пиццы</h2>
       <div className="content__items">
-        {isLoading ? (
+        {status === 'error' ? (<h2 className="content__empty">Произошла ошибка, не удалось найти пиццы</h2>) : status === 'loading' ? (
           [...new Array(4)].map((_, index) => <PizzaSkeleton key={index} />)
         ) : items.length ? (
           items.map((item) => <PizzaBlock key={item.id} {...item} />)
         ) : (
           <h2 className="content__empty">Пицца не найдена</h2>
         )}
+        {}
       </div>
       <Pagination countPages={pageCount} />
     </>
