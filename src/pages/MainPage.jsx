@@ -17,11 +17,8 @@ function Main() {
   const {items, status} = useSelector(state => state.pizzas)
   const isSearch = useRef(false);
   const isMounted = useRef(false);
-  // const [items, setItems] = useState([]);
-  // const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
   const getPizzas = () => {
-    // setIsLoading(true);
     // axios
     //   .get(`https://62e3c9643c89b95396d05783.mockapi.io/items?`, {
     //     params: {
@@ -76,7 +73,6 @@ function Main() {
         filters.sortType = sortType.type;
       }
       if (currentPage != 0) {
-        console.log(pageCount)
         filters.currentPage = currentPage;
       }
       if (selectedFilter != 0) {
