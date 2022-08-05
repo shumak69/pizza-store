@@ -2,9 +2,14 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from './singlePizza.module.scss'
-function SinglePizza() {
+function SinglePizza  (){
     const navigate = useNavigate();
-    const [pizza, setPizza] = useState({})
+    const [pizza, setPizza] = useState<{
+        imageUrl: string;
+        title: string;
+        price: number;
+        id: string;
+    }>()
     const {id} = useParams();
     useEffect(() => {
         axios.get(`https://62e3c9643c89b95396d05783.mockapi.io/items/${id}`)
@@ -16,7 +21,7 @@ function SinglePizza() {
             navigate('/')
         })
     }, [])
-    if(!pizza.id) {
+    if(!pizza) {
         return <div>Загрузка...</div>
     }
     return (
