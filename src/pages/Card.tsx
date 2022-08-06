@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import CartItem from "../Components/CartItem";
@@ -94,14 +93,14 @@ function Card() {
         </div>
       </div>
       <div className="content__items">
-        {items.map(item => (
+        {items.map((item: any) => (
           <CartItem {...item} key={item.id}/>
         ))}
       </div>
       <div className="cart__bottom">
         <div className="cart__bottom-details">
           <span>
-            Всего пицц: <b>{items.reduce((sum, item) => item.count + sum, 0)} шт.</b>
+            Всего пицц: <b>{items.reduce((sum:number, item: any) => item.count + sum, 0)} шт.</b>
           </span>
           <span>
             Сумма заказа: <b>{totalPrice} ₴</b>

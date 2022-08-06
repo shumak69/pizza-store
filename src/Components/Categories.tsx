@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { setSelectedFilter } from "../redux/slices/filterSlice"
 function Categories() {
-    const active = useSelector(state => state.filter.selectedFilter)
+    const active = useSelector<any>(state => state.filter.selectedFilter)
     const dispatch = useDispatch()
     const items=[
         "Все",

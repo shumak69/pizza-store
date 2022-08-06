@@ -1,6 +1,12 @@
 import classNames from "classnames"
 
-function Button({outline, children, className}) {
+type CategoriesProps = {
+  outline?: boolean;
+  children: any,
+  className: string 
+}
+
+function Button({outline, children, className}: CategoriesProps) {
   return (
     <button
     className={classNames('button', className, {

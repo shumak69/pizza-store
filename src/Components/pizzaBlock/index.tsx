@@ -2,13 +2,30 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { addItem, selectCartItemById } from "../../redux/slices/cartSlice";
-function PizzaBlock({ title, price, imageUrl, types, sizes, id }) {
+
+type PizzaBlockProps = {
+  title: string;
+  price: number;
+  imageUrl: string;
+  types: number[];
+  sizes: number[];
+  id: string;
+};
+
+function PizzaBlock({
+  title,
+  price,
+  imageUrl,
+  types,
+  sizes,
+  id,
+}: PizzaBlockProps) {
   const dispatch = useDispatch();
-  const itemCount = useSelector(selectCartItemById(id))
+  const itemCount = useSelector(selectCartItemById(id));
   const [activeType, setActiveType] = useState(0);
   const [activeSize, setActiveSize] = useState(0);
   const typesName = ["тонкое", "традиционное"];
-  const sizeType = [26, 30, 40]
+  const sizeType = [26, 30, 40];
   const addPizza = () => {
     // setPizzaCount((state) => ++state)
     const item = {
@@ -17,10 +34,10 @@ function PizzaBlock({ title, price, imageUrl, types, sizes, id }) {
       price,
       imageUrl,
       type: typesName[activeType],
-      sizes: sizeType[activeSize]
+      sizes: sizeType[activeSize],
     };
-    dispatch(addItem(item))
-  }
+    dispatch(addItem(item));
+  };
   return (
     <div className="pizza-block">
       <Link to={"/pizza/" + id}>

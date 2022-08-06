@@ -8,7 +8,6 @@ function SinglePizza  (){
         imageUrl: string;
         title: string;
         price: number;
-        id: string;
     }>()
     const {id} = useParams();
     useEffect(() => {

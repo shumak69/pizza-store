@@ -7,20 +7,20 @@ import styles from "./search.module.scss";
 function Search() {
   const [ inputValue, setInputValue ] = useState("");
   const dispatch = useDispatch();
-  const inputEl = useRef(null);
+  const inputEl = useRef<HTMLInputElement>(null);
   const clearInput = () => {
     dispatch(setSearchValue(''));
     setInputValue('');
-    inputEl.current.focus();
+    inputEl.current?.focus();
   }
 
-  const searchChange = (event) => {
+  const searchChange = (event: any) => {
     setInputValue(event.target.value);
     inputChange(event)
   }
 
   const inputChange = useCallback(
-    debounce((event) => {
+    debounce((event: any) => {
       dispatch(setSearchValue(event.target.value))
     }, 500)
   , [])

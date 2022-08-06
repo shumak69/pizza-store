@@ -12,9 +12,9 @@ import { fetchPizzas } from "../redux/slices/pizzasSlice";
 function Main() {
   let [searchParams, setSearchParams] = useSearchParams();
   let location = useLocation();
-  const { sortType, selectedFilter, searchValue, currentPage, pageCount } =
-    useSelector((state) => state.filter);
-  const {items, status} = useSelector(state => state.pizzas)
+  const { sortType, selectedFilter, searchValue, currentPage, pageCount }: any =
+    useSelector<any>((state) => state.filter);
+  const {items, status}: any = useSelector<any>(state => state.pizzas)
   const isSearch = useRef(false);
   const isMounted = useRef(false);
   const dispatch = useDispatch();
@@ -30,8 +30,9 @@ function Main() {
     //       search: searchValue ? searchValue : "",
     //     },
     //   })
+      //@ts-ignoreignore
       dispatch(fetchPizzas({currentPage, selectedFilter, sortType, searchValue}))
-      .then(({payload}) => {
+      .then(({payload}:any) => {
         const res = payload
         if (Math.ceil((res?.count || 0) / 4) !== pageCount) {
           dispatch(setPageCount(res?.count || 0));
@@ -68,15 +69,16 @@ function Main() {
   }, [selectedFilter, sortType, searchValue, currentPage]);
   useEffect(() => {
     if (isMounted.current) {
-      const filters = {};
+      type filtersType = {sortType?: string; currentPage?: string; selectedFilter?: string}
+      const filters : filtersType = {};
       if (sortType.type != "rating") {
         filters.sortType = sortType.type;
       }
       if (currentPage != 0) {
-        filters.currentPage = currentPage;
+        filters.currentPage = '' + currentPage;
       }
       if (selectedFilter != 0) {
-        filters.selectedFilter = selectedFilter;
+        filters.selectedFilter = '' + selectedFilter;
       }
       setSearchParams(filters);
     }
@@ -93,7 +95,7 @@ function Main() {
         {status === 'error' ? (<h2 className="content__empty">Произошла ошибка, не удалось найти пиццы</h2>) : status === 'loading' ? (
           [...new Array(4)].map((_, index) => <PizzaSkeleton key={index} />)
         ) : items.length ? (
-          items.map((item) => <PizzaBlock key={item.id} {...item} />)
+          items.map((item: any) => <PizzaBlock key={item.id} {...item} />)
         ) : (
           <h2 className="content__empty">Пицца не найдена</h2>
         )}

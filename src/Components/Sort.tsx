@@ -1,23 +1,30 @@
 import { useEffect, useRef, useState } from "react";
 import {useDispatch, useSelector} from 'react-redux';
 import {setSelectedSort} from '../redux/slices/filterSlice';
-export const list = [{name: "популярности", type: 'rating', params: 'asc'}, 
+
+type SortItem = {
+  name: string;
+  type: string;
+  params: string;
+}
+
+export const list : SortItem[] = [{name: "популярности", type: 'rating', params: 'asc'}, 
   {name: "цене (по возрастанию)", type: 'price', params: 'asc' }, 
   {name: "цене (по убиванию)", type: 'price', params: 'desc'}, 
   {name: "алфавиту", type: 'title', params: 'asc'}
 ]
 function Sort() {
   const [isOpen, setIsOpen] = useState(false);
-  const sortRef = useRef();
-  const active = useSelector(state => state.filter.sortType)
+  const sortRef = useRef<HTMLDivElement>(null);
+  const active:any = useSelector<any>(state => state.filter.sortType)
   const dispatch = useDispatch()
-  function selectItem(i) {
+  function selectItem(i: SortItem) {
     dispatch(setSelectedSort(i))
     setIsOpen(false);
   }
 
   useEffect(() => {
-    const hidePopUp = function (e) {
+    const hidePopUp = function (e: any) {
         if(!e.path.includes(sortRef.current)) {
           setIsOpen(false)
         }
