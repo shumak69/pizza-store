@@ -2,8 +2,8 @@ import classNames from "classnames"
 
 type CategoriesProps = {
   outline?: boolean;
-  children: any,
-  className: string 
+  children: JSX.Element | JSX.Element[];
+  className: string; 
 }
 
 function Button({outline, children, className}: CategoriesProps) {

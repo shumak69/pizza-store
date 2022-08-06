@@ -1,5 +1,5 @@
 import debounce from 'lodash.debounce';
-import { useCallback, useRef, useState } from "react";
+import { ChangeEvent, useCallback, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setSearchValue } from "../../redux/slices/filterSlice";
 import styles from "./search.module.scss";
@@ -14,13 +14,13 @@ function Search() {
     inputEl.current?.focus();
   }
 
-  const searchChange = (event: any) => {
+  const searchChange = (event: ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
     inputChange(event)
   }
 
   const inputChange = useCallback(
-    debounce((event: any) => {
+    debounce((event) => {
       dispatch(setSearchValue(event.target.value))
     }, 500)
   , [])

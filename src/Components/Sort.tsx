@@ -1,42 +1,42 @@
-import { useEffect, useRef, useState } from "react";
-import {useDispatch, useSelector} from 'react-redux';
-import {setSelectedSort} from '../redux/slices/filterSlice';
+import {  useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setSelectedSort } from "../redux/slices/filterSlice";
 
 type SortItem = {
   name: string;
-  type: string;
+  type: 'rating' | 'price' | 'title';
   params: string;
-}
+};
 
-export const list : SortItem[] = [{name: "популярности", type: 'rating', params: 'asc'}, 
-  {name: "цене (по возрастанию)", type: 'price', params: 'asc' }, 
-  {name: "цене (по убиванию)", type: 'price', params: 'desc'}, 
-  {name: "алфавиту", type: 'title', params: 'asc'}
-]
+export const list: SortItem[] = [
+  { name: "популярности", type: "rating", params: "asc" },
+  { name: "цене (по возрастанию)", type: "price", params: "asc" },
+  { name: "цене (по убиванию)", type: "price", params: "desc" },
+  { name: "алфавиту", type: "title", params: "asc" },
+];
 function Sort() {
   const [isOpen, setIsOpen] = useState(false);
   const sortRef = useRef<HTMLDivElement>(null);
-  const active:any = useSelector<any>(state => state.filter.sortType)
-  const dispatch = useDispatch()
+  const active: any = useSelector<any>((state) => state.filter.sortType);
+  const dispatch = useDispatch();
   function selectItem(i: SortItem) {
-    dispatch(setSelectedSort(i))
+    dispatch(setSelectedSort(i));
     setIsOpen(false);
   }
 
   useEffect(() => {
-    const hidePopUp = function (e: any) {
-        if(!e.path.includes(sortRef.current)) {
-          setIsOpen(false)
-        }
-        console.log('1');
-    }
-    if(isOpen) {
-      document.body.addEventListener('click', hidePopUp)
+    const hidePopUp = function (e: MouseEvent) {
+      if (sortRef.current && !e.composedPath().includes(sortRef.current)) {
+        setIsOpen(false);
+      }
+    };
+    if (isOpen) {
+      document.body.addEventListener("click", hidePopUp);
     }
     return () => {
-      document.body.removeEventListener('click', hidePopUp)
-    }
-  }, [isOpen])
+      document.body.removeEventListener("click", hidePopUp);
+    };
+  }, [isOpen]);
   return (
     <div className="sort" ref={sortRef}>
       <div className="sort__label">

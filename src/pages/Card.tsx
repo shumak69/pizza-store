@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import CartItem from "../Components/CartItem";
+import CartItem, { CartItemProps } from "../Components/CartItem";
 import { clearItems } from "../redux/slices/cartSlice";
 import CardEmpty from "./CardEmpty";
 import { selectCart } from "../redux/slices/cartSlice";
@@ -93,14 +93,14 @@ function Card() {
         </div>
       </div>
       <div className="content__items">
-        {items.map((item: any) => (
+        {items.map((item: CartItemProps) => (
           <CartItem {...item} key={item.id}/>
         ))}
       </div>
       <div className="cart__bottom">
         <div className="cart__bottom-details">
           <span>
-            Всего пицц: <b>{items.reduce((sum:number, item: any) => item.count + sum, 0)} шт.</b>
+            Всего пицц: <b>{items.reduce((sum:number, item: {count: number}) => item.count + sum, 0)} шт.</b>
           </span>
           <span>
             Сумма заказа: <b>{totalPrice} ₴</b>

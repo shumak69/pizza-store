@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useSearchParams } from "react-router-dom";
 import Categories from "../Components/Categories";
 import Pagination from "../Components/pagination";
-import PizzaBlock from "../Components/pizzaBlock";
+import PizzaBlock, { PizzaBlockProps } from "../Components/pizzaBlock";
 import PizzaSkeleton from "../Components/pizzaBlock/PizzaSkeleton";
 import Sort, { list } from "../Components/Sort";
 import { setFilters, setPageCount } from "../redux/slices/filterSlice";
@@ -53,8 +53,8 @@ function Main() {
             name: "популярности",
             params: "asc",
           },
-          selectedFilter: selectedFilter || 0,
-          currentPage: currentPage || 0,
+          selectedFilter: Number(selectedFilter),
+          currentPage: Number(currentPage),
         })
       );
       isSearch.current = true;
@@ -95,7 +95,7 @@ function Main() {
         {status === 'error' ? (<h2 className="content__empty">Произошла ошибка, не удалось найти пиццы</h2>) : status === 'loading' ? (
           [...new Array(4)].map((_, index) => <PizzaSkeleton key={index} />)
         ) : items.length ? (
-          items.map((item: any) => <PizzaBlock key={item.id} {...item} />)
+          items.map((item: PizzaBlockProps) => <PizzaBlock key={item.id} {...item} />)
         ) : (
           <h2 className="content__empty">Пицца не найдена</h2>
         )}
