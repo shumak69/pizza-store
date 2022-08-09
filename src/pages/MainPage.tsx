@@ -1,40 +1,31 @@
 import { useEffect, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useLocation, useSearchParams } from "react-router-dom";
 import Categories from "../Components/Categories";
+import Limits from "../Components/Limits";
 import Pagination from "../Components/pagination";
 import PizzaBlock, { PizzaBlockProps } from "../Components/pizzaBlock";
 import PizzaSkeleton from "../Components/pizzaBlock/PizzaSkeleton";
 import Sort, { list } from "../Components/Sort";
-import { setFilters, setPageCount } from "../redux/slices/filterSlice";
-import { fetchPizzas } from "../redux/slices/pizzasSlice";
+import { FilterSliceState, setFilters, setPageCount } from "../redux/slices/filterSlice";
+import { fetchPizzas, PizzaSliceState, Status } from "../redux/slices/pizzasSlice";
+import { RootState, useAppDispatch } from "../redux/store";
 
 function Main() {
   let [searchParams, setSearchParams] = useSearchParams();
   let location = useLocation();
-  const { sortType, selectedFilter, searchValue, currentPage, pageCount }: any =
-    useSelector<any>((state) => state.filter);
-  const {items, status}: any = useSelector<any>(state => state.pizzas)
+  const { sortType, selectedFilter, searchValue = '', currentPage, pageCount, limits } =
+    useSelector<RootState, FilterSliceState>((state) => state.filter);
+  const {items, status} = useSelector<RootState, PizzaSliceState>(state => state.pizzas)
   const isSearch = useRef(false);
   const isMounted = useRef(false);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const getPizzas = () => {
-    // axios
-    //   .get(`https://62e3c9643c89b95396d05783.mockapi.io/items?`, {
-    //     params: {
-    //       page: currentPage + 1,
-    //       limit: 4,
-    //       category: selectedFilter > 0 ? selectedFilter : null,
-    //       sortBy: sortType.type,
-    //       order: sortType.params || "asc",
-    //       search: searchValue ? searchValue : "",
-    //     },
-    //   })
-      //@ts-ignoreignore
-      dispatch(fetchPizzas({currentPage, selectedFilter, sortType, searchValue}))
-      .then(({payload}:any) => {
-        const res = payload
-        if (Math.ceil((res?.count || 0) / 4) !== pageCount) {
+      dispatch(fetchPizzas({currentPage, selectedFilter, sortType, searchValue, limits}))
+      .then(({payload}) => {
+        console.log('payload' , payload)
+        const res = payload as {count: number}
+        if (Math.ceil((res?.count || 0) / limits) !== pageCount) {
           dispatch(setPageCount(res?.count || 0));
         }
       })
@@ -55,7 +46,7 @@ function Main() {
           },
           selectedFilter: Number(selectedFilter),
           currentPage: Number(currentPage),
-        })
+        } as FilterSliceState)
       );
       isSearch.current = true;
     }
@@ -66,7 +57,7 @@ function Main() {
     }
 
     isSearch.current = false;
-  }, [selectedFilter, sortType, searchValue, currentPage]);
+  }, [selectedFilter, sortType, searchValue, currentPage, limits]);
   useEffect(() => {
     if (isMounted.current) {
       type filtersType = {sortType?: string; currentPage?: string; selectedFilter?: string}
@@ -88,11 +79,12 @@ function Main() {
     <>
       <div className="content__top">
         <Categories />
+        <Limits/>
         <Sort />
       </div>
       <h2 className="content__title">Все пиццы</h2>
       <div className="content__items">
-        {status === 'error' ? (<h2 className="content__empty">Произошла ошибка, не удалось найти пиццы</h2>) : status === 'loading' ? (
+        {status === Status.ERROR ? (<h2 className="content__empty">Произошла ошибка, не удалось найти пиццы</h2>) : status === Status.LOADING ? (
           [...new Array(4)].map((_, index) => <PizzaSkeleton key={index} />)
         ) : items.length ? (
           items.map((item: PizzaBlockProps) => <PizzaBlock key={item.id} {...item} />)
@@ -101,7 +93,7 @@ function Main() {
         )}
         {}
       </div>
-      <Pagination countPages={pageCount} />
+      <Pagination countPages={pageCount!} />
     </>
   );
 }

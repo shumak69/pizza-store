@@ -1,6 +1,9 @@
 .singlePizza{
     display: flex;
     gap: 20px;
+    @media (max-width: 992px) {
+        flex-direction: column;
+    }
 }
 
 .wrapper {
@@ -17,6 +20,15 @@
             width: 150px;
             position: absolute;
             bottom: 50px;
+            @media (max-width: 992px) {
+                bottom: 20px;
+                right: 50%;
+                transform: translate(50%);
+            }
+            @media (max-width: 576px) {
+                right: 0;
+                transform: translate(0);
+            }
         }
     }
 }
@@ -28,4 +40,8 @@
 .price{
     font-size: 20px;
     margin-top: 20px;
+    
+    @media (max-width: 576px) {
+        margin-top: 5px;
+    }
 }

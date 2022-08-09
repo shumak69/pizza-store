@@ -4,9 +4,20 @@ import {Link, useLocation} from "react-router-dom";
 import Search from './search'
 import { useSelector } from "react-redux";
 import { selectCart } from "../redux/slices/cartSlice";
+import { useEffect, useRef } from "react";
 function Header() {
   const {totalPrice, items} = useSelector(selectCart)
   const location = useLocation();
+  const isMounted = useRef(false);
+
+  useEffect(() => {
+    if(isMounted.current) {
+      const json = JSON.stringify(items)
+      localStorage.setItem('pizza', json)
+    }
+    isMounted.current = true;
+  }, [items])
+
   return (
     <div className="header">
       <div className="container">

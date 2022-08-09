@@ -24,9 +24,10 @@ function CartItem({ ...item }:CartItemProps) {
         <p>{item.type} тесто, {item.sizes} см.</p>
       </div>
       <div className="cart__item-count">
-        <div
+        <button
           className="button button--outline button--circle cart__item-count-minus"
           onClick={() => dispatch(minusCount(item.id))}
+          disabled={item.count === 1}
         >
           <svg
             width="10"
@@ -44,7 +45,7 @@ function CartItem({ ...item }:CartItemProps) {
               fill="#EB5A1E"
             />
           </svg>
-        </div>
+        </button>
         <b>{item.count}</b>
         <div
           className="button button--outline button--circle cart__item-count-plus"

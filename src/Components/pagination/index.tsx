@@ -2,13 +2,14 @@ import ReactPaginate from "react-paginate";
 import { useDispatch, useSelector } from "react-redux";
 import styles from './pagination.module.scss'
 import {setCurrentPage} from '../../redux/slices/filterSlice'
+import { RootState } from "../../redux/store";
 
 type PaginationProps = {
   countPages: number
 }
 
 function Pagination({countPages} : PaginationProps) {
-  const currentPage: any = useSelector<any>(state => state.filter.currentPage)
+  const currentPage = useSelector<RootState, number>(state => state.filter.currentPage)
   const dispatch = useDispatch();
   if(!countPages) {
     return null;

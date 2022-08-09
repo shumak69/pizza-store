@@ -8,6 +8,9 @@
     &:focus {
         box-shadow: 0 0 10px rgba(60, 240, 90, 0.5);
     }
+    @media (max-width: 576px) {
+        width: 250px;
+    }
 }
 
 .icon {

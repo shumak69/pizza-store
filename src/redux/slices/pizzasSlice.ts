@@ -12,21 +12,22 @@ interface FetchPizzasArgs {
   selectedFilter: number;
   sortType: SortTypeState;
   searchValue: string;
+  limits: number;
 }
 
-interface AxiosRes {
+export interface AxiosRes {
   items: PizzaBlockProps[]
 }
 
 export const fetchPizzas = createAsyncThunk<AxiosRes, FetchPizzasArgs>(
   "pizzas/fetchPizzasStatus",
-  async ({ currentPage, selectedFilter, sortType, searchValue }) => {
+  async ({ currentPage, selectedFilter, sortType, searchValue, limits }) => {
     const res = await axios.get(
       `https://62e3c9643c89b95396d05783.mockapi.io/items?`,
       {
         params: {
           page: currentPage + 1,
-          limit: 4,
+          limit: limits,
           category: selectedFilter > 0 ? selectedFilter : null,
           sortBy: sortType.type,
           order: sortType.params || "asc",
@@ -38,14 +39,20 @@ export const fetchPizzas = createAsyncThunk<AxiosRes, FetchPizzasArgs>(
   }
 );
 
-interface PizzaSliceState {
+export enum Status {
+  LOADING = 'loading',
+  SUCCESS = 'success',
+  ERROR = 'error'
+}
+
+export interface PizzaSliceState {
   items: PizzaBlockProps[];
-  status: "loading" | "success" | "error";
+  status: Status;
 }
 
 const initialState: PizzaSliceState = {
   items: [],
-  status: "loading",
+  status: Status.LOADING,
 };
 
 const pizzasSlice = createSlice({
@@ -58,29 +65,17 @@ const pizzasSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchPizzas.pending, (state) => {
-      state.status = "loading";
+      state.status = Status.LOADING;
       state.items = [];
     });
     builder.addCase(fetchPizzas.fulfilled, (state, action) => {
-      state.status = "success";
+      state.status = Status.SUCCESS;
       state.items = action.payload.items;
     },);
     builder.addCase(fetchPizzas.rejected, (state) => {
-      state.status = "error";
+      state.status = Status.ERROR;
       state.items = [];
     },);
-    // [fetchPizzas.pending]: (state) => {
-    //   state.status = "loading";
-    //   state.items = [];
-    // },
-    // [fetchPizzas.fulfilled]: (state, action) => {
-    //   state.status = "success";
-    //   state.items = action.payload.items;
-    // },
-    // [fetchPizzas.rejected]: (state) => {
-    //   state.status = "error";
-    //   state.items = [];
-    // },
   },
 });
 

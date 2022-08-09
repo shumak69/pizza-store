@@ -1,17 +1,18 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-type Sort = {
+export type Sort = {
   type: 'rating' | 'price' | 'title';
   name: string;
   params: string;
 };
 
-interface FilterSliceState {
+export interface FilterSliceState {
   selectedFilter: number;
   sortType: Sort;
   searchValue?: string;
   currentPage: number;
   pageCount?: number;
+  limits: number
 }
 
 const initialState: FilterSliceState = {
@@ -20,6 +21,7 @@ const initialState: FilterSliceState = {
   searchValue: "",
   currentPage: 0,
   pageCount: 0,
+  limits: Number(localStorage.getItem("limits")) || 4
 };
 
 export const filterSlice = createSlice({
@@ -42,13 +44,16 @@ export const filterSlice = createSlice({
       state.currentPage = action.payload;
     },
     setPageCount(state, action: PayloadAction<number>) {
-      state.pageCount = Math.ceil(action.payload / 4);
+      state.pageCount = Math.ceil(action.payload / state.limits!) || 0;
     },
     setFilters(state, action: PayloadAction<FilterSliceState>) {
       state.currentPage = +action.payload.currentPage;
       state.sortType = action.payload.sortType;
       state.selectedFilter = +action.payload.selectedFilter;
     },
+    setLimits(state, action: PayloadAction<number>) {
+      state.limits = action.payload
+    }
   },
 });
 export const {
@@ -58,6 +63,7 @@ export const {
   setCurrentPage,
   setPageCount,
   setFilters,
+  setLimits,
 } = filterSlice.actions;
 
 export default filterSlice.reducer;

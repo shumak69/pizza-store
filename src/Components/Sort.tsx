@@ -1,6 +1,7 @@
-import {  useEffect, useRef, useState } from "react";
+import {  memo, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setSelectedSort } from "../redux/slices/filterSlice";
+import { setSelectedSort, Sort as SortType } from "../redux/slices/filterSlice";
+import { RootState } from "../redux/store";
 
 type SortItem = {
   name: string;
@@ -14,10 +15,11 @@ export const list: SortItem[] = [
   { name: "цене (по убиванию)", type: "price", params: "desc" },
   { name: "алфавиту", type: "title", params: "asc" },
 ];
-function Sort() {
+
+const Sort = memo(function Sort() {
   const [isOpen, setIsOpen] = useState(false);
   const sortRef = useRef<HTMLDivElement>(null);
-  const active: any = useSelector<any>((state) => state.filter.sortType);
+  const active = useSelector<RootState, SortType>((state) => state.filter.sortType);
   const dispatch = useDispatch();
   function selectItem(i: SortItem) {
     dispatch(setSelectedSort(i));
@@ -61,7 +63,7 @@ function Sort() {
             {list.map((name, i) => (
               <li
                 key={name.name}
-                className={active === i ? "active" : ""}
+                /* className={active === i ? "active" : ""} */
                 onClick={() => selectItem(name)}
               >
                 {name.name}
@@ -72,6 +74,6 @@ function Sort() {
       )}
     </div>
   );
-}
+})
 
 export default Sort;
